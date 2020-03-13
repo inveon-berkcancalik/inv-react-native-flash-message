@@ -193,7 +193,7 @@ export const DefaultFlash = ({
     ]);
   const hasIcon = !!iconView;
   const fullScreenStyles = fullScreen ? { flex: 1, paddingTop: "60%", width: "100%" } : null
-  const fullScreenWrapperStyles = fullScreen ? {height: Dimensions.get("window").height, margin: 0} : undefined
+  const fullScreenWrapperStyles = fullScreen ? {height: Dimensions.get("window").height, margin: 0, opacity: .95} : undefined
   return (
     <FlashMessageWrapper position={typeof position === "string" ? position : null}>
       {wrapperInset => (
