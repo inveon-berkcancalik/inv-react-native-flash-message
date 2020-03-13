@@ -29,7 +29,7 @@ const MessagePropType = PropTypes.shape({
 /**
  * Non-operation func
  */
-const noop = () => {};
+const noop = () => { };
 
 /**
  * Simple random ID for internal FlashMessage component usage
@@ -201,21 +201,20 @@ export const DefaultFlash = ({
               position === "center" && styles.defaultFlashCenter,
               position !== "center" && floating && styles.defaultFlashFloating,
               hasIcon && styles.defaultFlashWithIcon,
-              !!message.backgroundColor
-                ? { backgroundColor: message.backgroundColor }
-                : !!message.type &&
-                  !!FlashMessage.ColorTheme[message.type] && {
-                    backgroundColor: FlashMessage.ColorTheme[message.type],
-                  },
+              !!message.backgroundColor ? { backgroundColor: message.backgroundColor } : !!message.type &&
+                !!FlashMessage.ColorTheme[message.type] && { backgroundColor: FlashMessage.ColorTheme[message.type], },
               style,
             ],
             wrapperInset,
             !!hideStatusBar,
-            position !== "center" && floating ? "margin" : "padding"
+            position !== "center" && floating ? "margin" : "padding",
           )}
-          {...props}>
+          {...props}
+
+        >
+
           {hasIcon && icon.position === "left" && iconView}
-          <View style={styles.flashLabel}>
+          <View style={[styles.flashLabel, { flex: 1, paddingTop: "60%", width: "100%" }]}>
             <Text
               style={[
                 styles.flashText,
@@ -225,12 +224,14 @@ export const DefaultFlash = ({
               ]}>
               {message.message}
             </Text>
-            {!!renderCustomContent && renderCustomContent(message)}
+
             {hasDescription && (
               <Text style={[styles.flashText, !!message.color && { color: message.color }, textStyle]}>
                 {message.description}
               </Text>
             )}
+
+            {!!renderCustomContent && renderCustomContent(message)}
           </View>
           {hasIcon && icon.position === "right" && iconView}
         </View>
@@ -521,7 +522,9 @@ export default class FlashMessage extends Component {
    * this.refs.YOUR_REF.showMessage({ message: "Contact sent", description "Your message was sent with success", type: "success" })
    * ```
    */
-  showMessage(message, description = null, type = "default") {
+  showMessage(message, description = null, type = "default", custom) {
+    console.log("show message", message)
+
     if (!!message) {
       let _message = {};
       if (typeof message === "string") {
@@ -531,11 +534,11 @@ export default class FlashMessage extends Component {
       }
 
       const animated = this.isAnimated(_message);
-      this.setState({ message: _message }, () => this.toggleVisibility(true, animated));
+      this.setState({ message: _message, custom: message.custom }, () => this.toggleVisibility(true, animated));
       return;
     }
 
-    this.setState({ message: null, isHidding: false });
+    this.setState({ message: null, isHidding: false, custom: message.custom });
   }
   /**
    * Instace ref function to programmatically hide message
@@ -578,7 +581,8 @@ export default class FlashMessage extends Component {
               message={message}
               hideStatusBar={hideStatusBar}
               renderFlashMessageIcon={renderFlashMessageIcon}
-              renderCustomContent={renderCustomContent}
+              //renderCustomContent={renderCustomContent}
+              renderCustomContent={this.state.custom}
               icon={icon}
               style={style}
               textStyle={textStyle}
