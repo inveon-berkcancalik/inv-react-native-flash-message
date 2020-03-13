@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, TouchableWithoutFeedback, Platform, StatusBar, Animated, Image, Text, View } from "react-native";
+import { StyleSheet, TouchableWithoutFeedback, Platform, StatusBar, Animated, Image, Text, View, Dimensions } from "react-native";
 import { isIphoneX, getStatusBarHeight } from "react-native-iphone-x-helper";
 import PropTypes from "prop-types";
 
@@ -24,6 +24,7 @@ const MessagePropType = PropTypes.shape({
   type: PropTypes.string,
   backgroundColor: PropTypes.string,
   color: PropTypes.string,
+  fullScreen: PropTypes.bool
 }).isRequired;
 
 /**
@@ -178,6 +179,7 @@ export const DefaultFlash = ({
   floating = false,
   icon,
   hideStatusBar = false,
+  fullScreen = false,
   ...props
 }) => {
   const hasDescription = !!message.description && message.description !== "";
@@ -190,7 +192,8 @@ export const DefaultFlash = ({
       icon.style,
     ]);
   const hasIcon = !!iconView;
-
+  const fullScreenStyles = fullScreen ? { flex: 1, paddingTop: "60%", width: "100%" } : null
+  const fullScreenWrapperStyles = fullScreen ? {height: Dimensions.get("window").height, margin: 0} : undefined
   return (
     <FlashMessageWrapper position={typeof position === "string" ? position : null}>
       {wrapperInset => (
@@ -204,6 +207,7 @@ export const DefaultFlash = ({
               !!message.backgroundColor ? { backgroundColor: message.backgroundColor } : !!message.type &&
                 !!FlashMessage.ColorTheme[message.type] && { backgroundColor: FlashMessage.ColorTheme[message.type], },
               style,
+              fullScreenWrapperStyles
             ],
             wrapperInset,
             !!hideStatusBar,
@@ -214,7 +218,7 @@ export const DefaultFlash = ({
         >
 
           {hasIcon && icon.position === "left" && iconView}
-          <View style={[styles.flashLabel, { flex: 1, paddingTop: "60%", width: "100%" }]}>
+          <View style={[styles.flashLabel, fullScreenStyles]}>
             <Text
               style={[
                 styles.flashText,
@@ -328,6 +332,10 @@ export default class FlashMessage extends Component {
      * The `MessageComponent` prop set the default flash message render component used to show all the messages
      */
     MessageComponent: DefaultFlash,
+    /**
+     * The 'fullScreen' prop make message to full screen modal
+     */
+    fullScreen: false
   };
   static propTypes = {
     canRegisterAsDefault: PropTypes.bool,
@@ -348,6 +356,7 @@ export default class FlashMessage extends Component {
     renderFlashMessageIcon: PropTypes.func,
     transitionConfig: PropTypes.func,
     MessageComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
+    fullScreen: PropTypes.bool
   };
   /**
    * Your can customize the default ColorTheme of this component
@@ -563,6 +572,7 @@ export default class FlashMessage extends Component {
     const icon = parseIcon(this.prop(message, "icon"));
     const hideStatusBar = this.prop(message, "hideStatusBar");
     const transitionConfig = this.prop(message, "transitionConfig");
+    const fullScreen = this.prop(message, "fullScreen")
     const animated = this.isAnimated(message);
     const animStyle = animated ? transitionConfig(visibleValue, position) : {};
 
@@ -587,6 +597,7 @@ export default class FlashMessage extends Component {
               style={style}
               textStyle={textStyle}
               titleStyle={titleStyle}
+              fullScreen={fullScreen}
             />
           </TouchableWithoutFeedback>
         )}

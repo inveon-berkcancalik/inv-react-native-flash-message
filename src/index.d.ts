@@ -60,6 +60,7 @@ export interface MessageOptions {
   textStyle?: StyleProp<TextStyle>;
   titleStyle?: StyleProp<TextStyle>;
   type?: MessageType;
+  fullScreen?:boolean;
   onPress?(): void;
   onLongPress?(): void;
 }

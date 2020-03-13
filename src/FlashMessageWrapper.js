@@ -120,7 +120,7 @@ export function styleWithInset(style, wrapperInset, hideStatusBar = false, prop 
     paddingTop: !!wrapperInset.isIPhoneX || !hideStatusBar ? paddingTop + wrapperInset.insetTop : paddingTop,
     paddingBottom: paddingBottom + wrapperInset.insetBottom,
     paddingLeft: paddingLeft + wrapperInset.insetLeft,
-    paddingRight: paddingRight + wrapperInset.insetRight,
+    paddingRight: paddingRight + wrapperInset.insetRight
   };
 }
 
